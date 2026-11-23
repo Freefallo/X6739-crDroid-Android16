@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Infinix GT 10 Pro (X6739) - Android 16 / crDroid 12
+  Trees are pinned to the LineageOS-23.2 generation, which is the base that
+  crDroid's 16.0 manifest tracks (default revision="refs/heads/lineage-23.2").
+-->
+<manifest>
+  <!-- Device tree -->
+  <project path="device/infinix/X6739"
+           name="vlxlxlv/android_device_infinix_X6739"
+           remote="github" revision="lineage-23.2" clone-depth="1" />
+
+  <!-- Prebuilt kernel (Image.gz + dtb + kernel-headers + modules).
+       The tree consumes a prebuilt kernel, it does not compile one, so this
+       branch name does not track the Android version. -->
+  <project path="device/infinix/X6739-kernel"
+           name="vlxlxlv/android_device_infinix_X6739-kernel"
+           remote="github" revision="lineage-22.2" clone-depth="1" />
+
+  <!-- Proprietary vendor blobs -->
+  <project path="vendor/infinix/X6739"
+           name="vlxlxlv/android_vendor_infinix_X6739"
+           remote="github" revision="lineage-23.2" clone-depth="1" />
+
+  <!-- Transsion hardware: sensors.transsion, vibrator service, fingerprint
+       HAL glue. Required by device/infinix/X6739/device.mk (soong namespace
+       hardware/transsion). -->
+  <project path="hardware/transsion"
+           name="vlxlxlv/android_hardware_transsion"
+           remote="github" revision="lineage-22.1" clone-depth="1" />
+
+  <!-- MediaTek platform: required by BoardConfig.mk (SEPolicy) and device.mk -->
+  <project path="hardware/mediatek"
+           name="LineageOS/android_hardware_mediatek"
+           remote="github" revision="lineage-23.2" clone-depth="1" />
+  <project path="device/mediatek/sepolicy_vndr"
+           name="LineageOS/android_device_mediatek_sepolicy_vndr"
+           remote="github" revision="lineage-23.2" clone-depth="1" />
+
+  <!-- MediaTek IMS: device.mk inherits vendor/mediatek/ims/ims.mk -->
+  <project path="vendor/mediatek/ims"
+           name="crdroidandroid/android_vendor_mediatek_ims"
+           remote="github" revision="16.0" clone-depth="1" />
+</manifest>
