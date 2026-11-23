@@ -98,6 +98,15 @@ jobs:
           JOBS: ${{ inputs.jobs }}
         run: ./scripts/build.sh sync
 
+      - name: Free disk before compiling
+        run: |
+          # The build does not need repo's git metadata (~10-20 GB on A16);
+          # an 84 GB runner volume cannot hold both that and out/.
+          du -sh .repo 2>/dev/null || true
+          rm -rf .repo
+          df -h /
+          free -h
+
       - name: Build crDroid
         env:
           JOBS: ${{ inputs.jobs }}
