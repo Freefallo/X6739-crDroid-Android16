@@ -28,7 +28,7 @@ jobs:
       - name: Free up runner disk space
         uses: jlumbroso/free-disk-space@main
         with:
-          tool-cache: true
+          preinstalled-runtimes: true
           android: true
           dotnet: true
           haskell: true
@@ -42,11 +42,13 @@ jobs:
 
       - name: Add swap (16 GB runner needs headroom for soong)
         run: |
-          sudo fallocate -l 16G /swapfile || sudo dd if=/dev/zero of=/swapfile bs=1M count=16384
-          sudo chmod 600 /swapfile
-          sudo mkswap /swapfile
-          sudo swapon /swapfile
+          # The runner image ships a busy /swapfile, so extend with /swap2 instead.
+          sudo fallocate -l 16G /swap2 || sudo dd if=/dev/zero of=/swap2 bs=1M count=16384
+          sudo chmod 600 /swap2
+          sudo mkswap /swap2
+          sudo swapon /swap2
           free -h
+          df -h /
 
       - name: Install build dependencies
         run: |
