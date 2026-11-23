@@ -36,6 +36,19 @@ jobs:
           docker-images: true
           swap-storage: false
 
+      - name: Reclaim maximum disk
+        run: |
+          df -h /
+          # free-disk-space leaves a lot behind on current images; AOSP 16 needs
+          # every byte on an 84 GB runner volume.
+          sudo rm -rf /opt/hostedtoolcache /usr/local/lib/android /usr/share/dotnet \
+                      /opt/ghc /usr/local/aws-cli /usr/share/swift /opt/microsoft \
+                      /usr/local/share/chromium /opt/google/chrome 2>/dev/null || true
+          sudo apt-get clean -y 2>/dev/null || true
+          sudo rm -rf /var/lib/apt/lists/* 2>/dev/null || true
+          docker image prune -af 2>/dev/null || true
+          df -h /
+
       - name: Show resources
         run: |
           nproc; free -h; df -h /
@@ -43,7 +56,8 @@ jobs:
       - name: Add swap (16 GB runner needs headroom for soong)
         run: |
           # The runner image ships a busy /swapfile, so extend with /swap2 instead.
-          sudo fallocate -l 16G /swap2 || sudo dd if=/dev/zero of=/swap2 bs=1M count=16384
+          # Kept at 8 GB: on this volume every GB of swap is a GB of build space.
+          sudo fallocate -l 8G /swap2 || sudo dd if=/dev/zero of=/swap2 bs=1M count=8192
           sudo chmod 600 /swap2
           sudo mkswap /swap2
           sudo swapon /swap2
